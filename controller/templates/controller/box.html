@@ -1,0 +1,102 @@
+{% extends 'controller/base.html' %}
+
+{% block bootstrap5_content %}
+    <div class="container-fluid sticky-top p-0 m-0">
+        <!-- headline: box name, controls and current track -->
+        <div class="container-fluid bg-warning px-5 py-3">
+            <div class="row">
+                <div class="col-4 col-lg-2">
+                    <h1 class="display-5 text-uppercase">{{ box.name }}</h1>
+                </div>
+                <div class="col-8 col-lg-2 d-flex align-items-center">
+                    <span class="text-black display-5">
+                        <a href="{% url 'controller:action' box.slug 'play' %}"><i class="bi bi-play-circle-fill text-black"></i></a>
+                        <a href="{% url 'controller:action' box.slug 'pause' %}"><i class="bi bi-pause-circle-fill text-black"></i></a>
+                        <a href="{% url 'controller:action' box.slug 'stop' %}"><i class="bi bi-stop-circle-fill text-black"></i></a>
+                    </span>
+                </div>
+                <div class="col-4 col-lg-3 d-flex align-items-center">
+                    <span class="text-black display-5 align-middle">
+                        <a href="{% url 'controller:action' box.slug 'vol_up' %}"><i class="bi bi-plus-circle-fill text-black"></i></a>
+                        <span class="display-5">{{ box.get_current_volume_pct }}%</span>
+                        <a href="{% url 'controller:action' box.slug 'vol_down' %}"><i class="bi bi-dash-circle-fill text-black"></i></a>
+                    </span>
+                </div>
+                <div class="col-8 col-lg-5">
+                    <span><i class="bi bi-person-fill"></i> {{ box.get_current_artist }}</span><br/>
+                    <span><i class="bi bi-disc-fill"></i> {{ box.get_current_track }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- breadcrumb -->
+        <div class="container-fluid bg-secondary px-5 py-3">
+            <div class="container-lg px-0 mx-0">
+                <a href="{% url 'controller:box-category' box.slug 0 %}" class="btn btn-lg btn-warning me-3">
+                    <i class="bi bi-house-fill"></i>
+                </a>
+
+                {% if breadcrumb_list %}
+                    {% for b in breadcrumb_list %}
+                        <a href="{% url 'controller:box-category' box.slug b.id %}" class="btn btn-lg btn-warning me-3">
+                            {{ b.name }}
+                        </a>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- category -->
+    {% if category_list %}
+    <div class="container-fluid px-5 py-3">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+            {% for c in category_list %}
+            <div class="col">
+                <div class="card h-100">
+                    <!-- <img src="{{ c.icon_url }}" class="card-img-top" alt="..."> -->
+                    <svg class="bd-placeholder-img card-img-top" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image cap" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect><text x="40%" y="50%" fill="#dee2e6" dy=".3em">Category</text></svg>
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ c.name }}</h5>
+                        <a href="{% url 'controller:box-category' box.slug c.id %}" class="stretched-link"></a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- items -->
+    {% if item_list %}
+    <div class="container-fluid px-5 py-3">
+        <div class="row pt-5">
+            {% for item in item_list %}
+            <div class="col-md-6 col-lg-3 pb-3">
+                <div class="card">
+                    <img src="{{ item.cover_url }}" class="card-img-top" alt="{{ item.title }}">
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.title }}</h5>
+                        <h6 class="card-subtitle text-muted">
+                            <span class="badge bg-secondary">Folge {{ item.episode_no }}</span>
+                        </h6>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'controller:item-play' box.slug item.id %}" class="btn btn-primary">
+                            <i class="bi bi-play"></i>
+                        </a>
+                        <a href="{% url 'controller:item-queue' box.slug item.id %}" class="btn btn-secondary">
+                            <i class="bi bi-music-note-list"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+{% endblock %}
